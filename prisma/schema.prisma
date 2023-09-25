@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// convertirá todo a JavaScript
+generator client {
+  provider = "prisma-client-js"
+}
+
+// basedatos que se conectará // sqlite o postgresql o mysql etc
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // en .env
+}
+
+// primera tabla
+// id automatico y autoincremental // ? es campo opcional osea puede ser null
+model User { // mayus
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String
+  lastname    String?
+  age Int
+  posts Post[] // relacion foreign key
+}
+
+// crear otras tablas y realizar migración
+model Post {
+  id      Int      @id @default(autoincrement())
+  title   String
+  content    String?
+  authorId Int
+
+  author User @relation(fields: [authorId], references: [id]) // relacion
+  // relacion de uno a muchos authorId de Post con id de User
+}
