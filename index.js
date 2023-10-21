@@ -1,10 +1,17 @@
 import { PrismaClient } from "@prisma/client" // importar prisma
 
+import { corsHeaders } from "./cors.js"
+
 const prisma = new PrismaClient() // db
 
 // async function main() {}
-const main = async () => {
+// const main = async () => {
+const main = async (req) => {
   //prisma.user. metodos
+  // This is needed if you're planning to invoke your function from a browser.
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders })
+  }
 
   try {
     // crear user
@@ -27,13 +34,14 @@ const main = async () => {
     // ó
 
     // crear post
-    const newPost = await prisma.post.create({ // relacion*
+    const newPost = await prisma.post.create({
+      // relacion*
       // campos
       data: {
         title: "mi 2ª publicacion",
         // content: "mi primer post",
         // authorId: newUser.id // reference // pasando directamente el id del autor
-        authorId: 8 // nuevo post para user 8
+        authorId: 6, // nuevo post para user 8
         /* author: {
           // o que conécte con una propiedad del autor
           connect: {
@@ -100,16 +108,25 @@ const main = async () => {
       }
     })
     console.log(user) */
+    /* return new Response(JSON.stringify(data), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    }) */
   } catch (error) {
     // console.log(error)
     console.log(error.message)
     console.log(error.meta)
-    console.log(error.meta.cause)
+    // console.log(error.meta.cause)
     console.log(error.code)
 
     if (error.code === "P2025") {
       console.log("user not found")
     }
+
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
+    })
   }
   /* const users = await prisma.user.findMany()
   console.log(users) */
@@ -118,17 +135,20 @@ const main = async () => {
   console.log(posts) */
 
   // mostrar todo y con relaciones
-  const users = await prisma.user.findMany({ //  todos los q encuentre
-    include: { // incluir relación con tabla post
-      posts: true
-    }
+  const users = await prisma.user.findMany({
+    //  todos los q encuentre
+    include: {
+      // incluir relación con tabla post
+      posts: true,
+    },
   })
-  users.forEach(user => {
-    console.log('-----')
+  users.forEach((user) => {
+    console.log("-----")
     console.log(`User: ${user.name}`)
     console.log(`Email: ${user.email}`)
 
-    user.posts.forEach((post, i) => { // agregar indice
+    user.posts.forEach((post, i) => {
+      // agregar indice
       console.log(`${i}. ${post.title} ${post.content}`) //n de cada post de cada user
     })
   })
@@ -136,3 +156,5 @@ const main = async () => {
 }
 
 main()
+
+//  node index

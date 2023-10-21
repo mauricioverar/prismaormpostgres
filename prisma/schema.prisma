@@ -19,7 +19,8 @@ model User { // mayus
   email   String   @unique
   name    String
   lastname    String?
-  age Int
+  age Int?
+  password    String
   posts Post[] // relacion foreign key
 }
 
@@ -33,3 +34,6 @@ model Post {
   author User @relation(fields: [authorId], references: [id]) // relacion
   // relacion de uno a muchos authorId de Post con id de User
 }
+
+// cualquier modificacion, ejecutar:
+// npx prisma migrate dev --name user_password
