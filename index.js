@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client" // importar prisma
 
-import { corsHeaders } from "./cors.js"
+// import { corsHeaders } from "./cors.js"
 
 const prisma = new PrismaClient() // db
 
@@ -9,9 +9,9 @@ const prisma = new PrismaClient() // db
 const main = async (req) => {
   //prisma.user. metodos
   // This is needed if you're planning to invoke your function from a browser.
-  if (req.method === "OPTIONS") {
+  /* if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders })
-  }
+  } */
 
   try {
     // crear user
@@ -123,10 +123,10 @@ const main = async (req) => {
       console.log("user not found")
     }
 
-    return new Response(JSON.stringify({ error: error.message }), {
+    /* return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
-    })
+    }) */
   }
   /* const users = await prisma.user.findMany()
   console.log(users) */
